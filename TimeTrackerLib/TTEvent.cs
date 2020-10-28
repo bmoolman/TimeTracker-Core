@@ -9,9 +9,10 @@ namespace TimeTrackerLib
         public int Id { get; set; }
         public int ProjectId { get; set; }
         public string ProjectName { get; set; }
-        public string StartUTC { get; set; }
-        public string EndUTC { get; set; }
+        public DateTime StartUTC { get; set; }
+        public DateTime EndUTC { get; set; }
         public string Comments { get; set; }
 
+       
     }
 }
