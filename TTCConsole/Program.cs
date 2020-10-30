@@ -1,46 +1,33 @@
-﻿using Dapper;
-using Microsoft.Data.Sqlite;
+﻿
 using System;
-using System.Linq;
 using System.Threading;
 using TimeTrackerLib.Models;
+using TimeTrackerLib.Repositories;
+using TimeTrackerLib.Utils;
 
 namespace TTCConsole
 {
     class Program
     {
+
+        private static string _datasource = @"c:\temp\timetrack.db";
         static void CreateDb()
         {
-            using (var connection = new SqliteConnection(@"Data Source=c:\temp\timetrack.db"))
-            {
-
-                var table = connection.Query("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Product';");
-                var tableName = table.FirstOrDefault();
-                if (tableName == null)
-                {
-                    Console.WriteLine("Creating database");
-                    connection.Execute("Create Table Product (" +
-                        "Name VARCHAR(100) NOT NULL," +
-                        "Description VARCHAR(1000) NULL);");
-                }
-                else
-                {
-                    Console.WriteLine("Database already exists");
-                }
-            }
+            SQLiteDbSetup setup = new SQLiteDbSetup(_datasource);
+            setup.CreateDb();
         }
         static void Main(string[] args)
         {
 
-            CreateDb();
-            return;
+            //CreateDb();
+
             Console.WriteLine("Enter the name of the project to start logging time against it.");
             string projectName = Console.ReadLine();
             Console.WriteLine("Press ESC to stop");
 
             TTEvent ttevent = new TTEvent()
             {
-                Id = 1,
+                Id = 0,
                 ProjectId = 1,
                 ProjectName = projectName,
                 StartUTC = DateTime.UtcNow
@@ -59,6 +46,7 @@ namespace TTCConsole
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
 
             ttevent.EndUTC = DateTime.UtcNow;
+            ttevent.Comments = "Time writing concluded";
 
             TimeSpan span = ttevent.EndUTC - ttevent.StartUTC;
             int totalSeconds = (int)span.TotalSeconds;
@@ -66,6 +54,9 @@ namespace TTCConsole
             Console.WriteLine($"Time logged for {projectName}: {totalSeconds} secs.");
             Console.WriteLine($"Start time UTC {ttevent.StartUTC}");
             Console.WriteLine($"End time UTC {ttevent.EndUTC}");
+
+            var rep = new SQLiteRepository(_datasource);
+            rep.SaveEvent(ttevent);
 
         }
     }
