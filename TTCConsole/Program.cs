@@ -36,7 +36,14 @@ namespace TTCConsole
             int projectId = Convert.ToInt32(Console.ReadLine());
             TTProject ttProject = GetProjectInfoFromId(projectId);
 
-            Console.WriteLine("Press ESC to stop");
+
+            if (ttProject.ProjectId==0)
+            {
+                Console.WriteLine($"[{ttProject.ProjectId}] DOES NOT EXIST! Please enter a description of the new project");
+                ttProject.ProjectName = Console.ReadLine();
+            }
+
+            Console.WriteLine("Press ESC to stop logging");
 
             TTEvent ttevent = new TTEvent()
             {
@@ -83,9 +90,7 @@ namespace TTCConsole
 
         private static TTProject GetProjectInfoFromId(int projectId)
         {
-            return _projectList.Where(p => p.ProjectId == projectId).FirstOrDefault() ?? new TTProject { ProjectId = 0, ProjectName = "unnamed project" };
-
-                       
+            return _projectList.Where(p => p.ProjectId == projectId).FirstOrDefault() ?? new TTProject { ProjectId = 0, ProjectName = "unnamed project" };                       
         }
 
         static void ReadProjectSettings()
