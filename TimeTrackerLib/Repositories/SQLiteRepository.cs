@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using TimeTrackerLib.Models;
 
@@ -35,6 +36,12 @@ namespace TimeTrackerLib.Repositories
             //    isActive,
             //    CreatedOn = DateTime.Now
             //});
+        }
+
+        public List<TTEvent> GetProjectEvents(int v)
+        {
+            return _dbConnection.Query<TTEvent>("SELECT * FROM TTEvent WHERE ProjectId = @ProjectId", new { ProjectId = v }).ToList();
+
         }
     }
 }
