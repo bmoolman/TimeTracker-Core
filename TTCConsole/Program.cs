@@ -26,7 +26,12 @@ namespace TTCConsole
 
             //CreateDb();
 
-            ReadProjectSettings();
+            var rep = new SQLiteRepository(_datasource);
+
+            //ReadProjectSettings(); //Loads json file
+
+            _projectList = rep.GetProjects();
+
             Console.WriteLine("Enter the id of the project to start logging time against it.");
 
             foreach (var item in _projectList)
@@ -42,6 +47,8 @@ namespace TTCConsole
                 Console.WriteLine($"[{ttProject.ProjectId}] DOES NOT EXIST! Please enter a description of the new project");
                 ttProject.ProjectName = Console.ReadLine();
             }
+
+            ttProject.ProjectId = rep.CreateNewProject(ttProject);
 
             Console.WriteLine("Press ESC to stop logging");
 
@@ -60,7 +67,7 @@ namespace TTCConsole
                     Thread.Sleep(2000);
                     TimeSpan span1 = DateTime.UtcNow - ttevent.StartUTC;
                     int totalSeconds1 = (int)span1.TotalSeconds;
-                    Console.WriteLine($"{ttProject.ProjectName}: running for {totalSeconds1} secs.");
+                    Console.WriteLine($"{ttProject.ProjectId}-{ttProject.ProjectName}: running for {totalSeconds1} secs.");
 
                 }
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
@@ -75,7 +82,7 @@ namespace TTCConsole
             Console.WriteLine($"Start time UTC {ttevent.StartUTC}");
             Console.WriteLine($"End time UTC {ttevent.EndUTC}");
 
-            var rep = new SQLiteRepository(_datasource);
+            
             rep.SaveEvent(ttevent);
 
             //List<TTEvent> events = rep.GetProjectEvents(2);

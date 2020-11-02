@@ -21,7 +21,7 @@ namespace TimeTrackerLib.Repositories
 
         public void SaveEvent(TTEvent ttevent)
         {
-            string SQL = "INSERT INTO TTEvent (ProjectId, ProjectName, StartUTC, EndUTC, Comments) VALUES (@ProjectId, @ProjectName, @StartUTC, @EndUTC, @Comments)";
+            string SQL = "INSERT INTO TTEvent (ProjectId, StartUTC, EndUTC, Comments) VALUES (@ProjectId, @StartUTC, @EndUTC, @Comments)";
             _dbConnection.Execute(SQL, ttevent);           
         }
 
@@ -29,6 +29,22 @@ namespace TimeTrackerLib.Repositories
         {
             return _dbConnection.Query<TTEvent>("SELECT * FROM TTEvent WHERE ProjectId = @ProjectId", new { ProjectId = v }).ToList();
 
+        }
+
+        public List<TTProject> GetProjects()
+        {
+            return _dbConnection.Query<TTProject>("SELECT * FROM TTProject").ToList();
+        }
+
+        public int CreateNewProject(TTProject ttProject)
+        {
+            string SQL = "INSERT INTO TTProject (ProjectName) VALUES (@ProjectName); SELECT last_insert_rowid()";
+            
+
+            var ret = _dbConnection.Query(SQL, ttProject).SingleOrDefault();
+
+            return Convert.ToInt32(((object[])((IDictionary<string, object>)ret).Values)[0]);
+           
         }
     }
 }
