@@ -16,6 +16,8 @@ namespace TTCConsole
 
         private static string _datasource = @"c:\temp\timetrack.db";
         private static List<TTProject> _projectList;
+
+        private static string updateText;
         static void CreateDb()
         {
             SQLiteDbSetup setup = new SQLiteDbSetup(_datasource);
@@ -42,13 +44,16 @@ namespace TTCConsole
             TTProject ttProject = GetProjectInfoFromId(projectId);
 
 
-            if (ttProject.ProjectId==0)
+            if (ttProject.ProjectId == 0)
             {
                 Console.WriteLine($"[{ttProject.ProjectId}] DOES NOT EXIST! Please enter a description of the new project");
                 ttProject.ProjectName = Console.ReadLine();
+                ttProject.ProjectId = rep.CreateNewProject(ttProject);
             }
 
-            ttProject.ProjectId = rep.CreateNewProject(ttProject);
+
+            Console.WriteLine($"Enter project comments");
+            string comments = Console.ReadLine();
 
             Console.WriteLine("Press ESC to stop logging");
 
@@ -56,24 +61,31 @@ namespace TTCConsole
             {
                 Id = 0,
                 ProjectId = ttProject.ProjectId,
-                ProjectName = ttProject.ProjectName,
-                StartUTC = DateTime.UtcNow
+                StartUTC = DateTime.UtcNow,
+                Comments = comments
             };
+
+            Timer timer = new Timer(Callback);
+            timer.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
+
+            updateText = $"{ttProject.ProjectId}-{ttProject.ProjectName}";
 
             do
             {
                 while (!Console.KeyAvailable)
                 {
-                    Thread.Sleep(2000);
+
                     TimeSpan span1 = DateTime.UtcNow - ttevent.StartUTC;
                     int totalSeconds1 = (int)span1.TotalSeconds;
-                    Console.WriteLine($"{ttProject.ProjectId}-{ttProject.ProjectName}: running for {totalSeconds1} secs.");
+
+
+                   
+
 
                 }
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
 
             ttevent.EndUTC = DateTime.UtcNow;
-            ttevent.Comments = "Time writing concluded";
 
             TimeSpan span = ttevent.EndUTC - ttevent.StartUTC;
             int totalSeconds = (int)span.TotalSeconds;
@@ -82,7 +94,7 @@ namespace TTCConsole
             Console.WriteLine($"Start time UTC {ttevent.StartUTC}");
             Console.WriteLine($"End time UTC {ttevent.EndUTC}");
 
-            
+
             rep.SaveEvent(ttevent);
 
             //List<TTEvent> events = rep.GetProjectEvents(2);
@@ -97,13 +109,18 @@ namespace TTCConsole
 
         private static TTProject GetProjectInfoFromId(int projectId)
         {
-            return _projectList.Where(p => p.ProjectId == projectId).FirstOrDefault() ?? new TTProject { ProjectId = 0, ProjectName = "unnamed project" };                       
+            return _projectList.Where(p => p.ProjectId == projectId).FirstOrDefault() ?? new TTProject { ProjectId = 0, ProjectName = "unnamed project" };
         }
 
         static void ReadProjectSettings()
-        {            
+        {
             var jsonString = File.ReadAllText("ProjectInfo.json");
             _projectList = JsonSerializer.Deserialize<List<TTProject>>(jsonString);
+        }
+
+        private static void Callback(object state)
+        {
+            Console.WriteLine(updateText);
         }
     }
 }
