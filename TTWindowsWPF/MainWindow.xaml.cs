@@ -34,5 +34,10 @@ namespace TTWindowsWPF
 
             DataContext = _projectList;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(((TTProject)lstProjects.SelectedItem).ProjectId.ToString());
+        }
     }
 }
