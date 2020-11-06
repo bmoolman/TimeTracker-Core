@@ -14,4 +14,8 @@
     <ProjectReference Include="..\TimeTrackerLib\TimeTrackerLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
 </Project>
