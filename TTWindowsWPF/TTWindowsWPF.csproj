@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Description />
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TimeTrackerLib\TimeTrackerLib.csproj" />
+    <ProjectReference Include="..\TTWPFModule\TTWPFModule.csproj" />
   </ItemGroup>
 
   <ItemGroup>

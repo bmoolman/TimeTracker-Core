@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TTWindowsWPF.Views"
         mc:Ignorable="d"
-        Title="ShellWindow" Height="450" Width="800">
+        Title="ShellWindow" Height="450" Width="800"
+        xmlns:prism="http://prismlibrary.com/"
+        WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBlock Text="Hello from Prism" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48"></TextBlock>
+        <StackPanel prism:RegionManager.RegionName="ContentRegion" />
     </Grid>
 </Window>

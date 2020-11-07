@@ -1,9 +1,14 @@
 ﻿using DryIoc;
 using Prism.DryIoc;
 using Prism.Ioc;
+using Prism.Modularity;
+using Prism.Regions;
 using System;
 using System.Windows;
+using System.Windows.Controls;
+using TTWindowsWPF.Core.Regions;
 using TTWindowsWPF.Views;
+using TTWPFModule;
 
 namespace TTWindowsWPF
 {
@@ -22,5 +27,24 @@ namespace TTWindowsWPF
         {
            
         }
+
+        protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
+        {
+            base.ConfigureRegionAdapterMappings(regionAdapterMappings);
+            regionAdapterMappings.RegisterMapping(typeof(StackPanel), Container.Resolve<StackPanelRegionAdapter>());
+        }
+
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        {
+            moduleCatalog.AddModule<TTModule>();
+
+        }
+
+        //protected override IModuleCatalog CreateModuleCatalog()
+        //{
+        //    return new DirectoryModuleCatalog() { ModulePath = @".\Modules" };
+        //}
+
+
     }
 }
