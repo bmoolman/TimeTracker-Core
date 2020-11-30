@@ -13,6 +13,10 @@ namespace TimeTrackerLib.Models
         public DateTime EndUTC { get; set; }
         public string Comments { get; set; }
 
+        public bool IsCustom { get; set; } =false;
+
+        public int LoggedMinutes { get; set; }
+
        
     }
 }

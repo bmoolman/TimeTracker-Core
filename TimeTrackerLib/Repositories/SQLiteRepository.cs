@@ -21,7 +21,7 @@ namespace TimeTrackerLib.Repositories
 
         public void SaveEvent(TTEvent ttevent)
         {
-            string SQL = "INSERT INTO TTEvent (ProjectId, StartUTC, EndUTC, Comments) VALUES (@ProjectId, @StartUTC, @EndUTC, @Comments)";
+            string SQL = "INSERT INTO TTEvent (ProjectId, StartUTC, EndUTC, Comments, IsCustom, LoggedMinutes) VALUES (@ProjectId, @StartUTC, @EndUTC, @Comments,@IsCustom, @LoggedMinutes)";
             _dbConnection.Execute(SQL, ttevent);           
         }
 
@@ -38,7 +38,7 @@ namespace TimeTrackerLib.Repositories
 
         public int CreateNewProject(TTProject ttProject)
         {
-            string SQL = "INSERT INTO TTProject (ProjectName) VALUES (@ProjectName); SELECT last_insert_rowid()";
+            string SQL = "INSERT INTO TTProject (ProjectName, ProjectDescription) VALUES (@ProjectName,@ProjectDescription); SELECT last_insert_rowid()";
             
 
             var ret = _dbConnection.Query(SQL, ttProject).SingleOrDefault();

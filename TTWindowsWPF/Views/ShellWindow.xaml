@@ -9,6 +9,6 @@
         xmlns:prism="http://prismlibrary.com/"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        <StackPanel prism:RegionManager.RegionName="ContentRegion" />
+        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
     </Grid>
 </Window>

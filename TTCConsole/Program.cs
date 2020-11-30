@@ -26,7 +26,7 @@ namespace TTCConsole
         static void Main(string[] args)
         {
 
-            //CreateDb();
+            //CreateDb(); return;
 
             var rep = new SQLiteRepository(_datasource);
 
@@ -46,13 +46,16 @@ namespace TTCConsole
 
             if (ttProject.ProjectId == 0)
             {
-                Console.WriteLine($"[{ttProject.ProjectId}] DOES NOT EXIST! Please enter a description of the new project");
+                Console.WriteLine($"[{ttProject.ProjectId}] DOES NOT EXIST! Enter the name of the new project");
                 ttProject.ProjectName = Console.ReadLine();
+                Console.WriteLine($"[{ttProject.ProjectName}] - Enter a description of the new project");
+                ttProject.ProjectDescription = Console.ReadLine();
                 ttProject.ProjectId = rep.CreateNewProject(ttProject);
+                Console.WriteLine($"[{ttProject.ProjectName}] - Create successfully\n");
             }
 
 
-            Console.WriteLine($"Enter project comments");
+            Console.WriteLine($"What are you currently working on for {ttProject.ProjectName}");
             string comments = Console.ReadLine();
 
             Console.WriteLine("Press ESC to stop logging");
@@ -66,7 +69,7 @@ namespace TTCConsole
             };
 
             Timer timer = new Timer(Callback);
-            timer.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
+            timer.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(60));
 
             updateText = $"{ttProject.ProjectId}-{ttProject.ProjectName}";
 
@@ -77,11 +80,6 @@ namespace TTCConsole
 
                     TimeSpan span1 = DateTime.UtcNow - ttevent.StartUTC;
                     int totalSeconds1 = (int)span1.TotalSeconds;
-
-
-                   
-
-
                 }
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
 
@@ -90,10 +88,22 @@ namespace TTCConsole
             TimeSpan span = ttevent.EndUTC - ttevent.StartUTC;
             int totalSeconds = (int)span.TotalSeconds;
 
+            ttevent.LoggedMinutes = totalSeconds / 60 == 0 ? 1: totalSeconds / 60;
+
             Console.WriteLine($"Time logged for {ttProject.ProjectName}: {totalSeconds} secs.");
             Console.WriteLine($"Start time UTC {ttevent.StartUTC}");
             Console.WriteLine($"End time UTC {ttevent.EndUTC}");
 
+            Console.WriteLine("Do you want to overwrite the time logged? [y/n]");
+
+            string OverrideText = Console.ReadLine();
+            if (OverrideText.ToLower()=="y")
+            {
+                Console.WriteLine("Enter the amount of time spent on this activity in minutes");
+                int overrideMins = Convert.ToInt32(Console.ReadLine());
+                ttevent.IsCustom = true;
+                ttevent.LoggedMinutes = overrideMins;
+            }
 
             rep.SaveEvent(ttevent);
 
