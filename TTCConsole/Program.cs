@@ -15,7 +15,7 @@ namespace TTCConsole
     {
 
         private static string _datasource = @"c:\temp\timetrack.db";
-        private static List<TTProject> _projectList;
+        private static List<TTProjectSummary> _projectList;
 
         private static string updateText;
         static void CreateDb()
@@ -38,7 +38,7 @@ namespace TTCConsole
 
             foreach (var item in _projectList)
             {
-                Console.WriteLine($"[{item.ProjectId}]\t {item.ProjectName}");
+                Console.WriteLine($"[{item.ProjectId}]\t {item.ProjectName}\t\t [{item.SumLoggedMinutes} mins.]");
             }
             int projectId = Convert.ToInt32(Console.ReadLine());
             TTProject ttProject = GetProjectInfoFromId(projectId);
@@ -125,7 +125,7 @@ namespace TTCConsole
         static void ReadProjectSettings()
         {
             var jsonString = File.ReadAllText("ProjectInfo.json");
-            _projectList = JsonSerializer.Deserialize<List<TTProject>>(jsonString);
+            _projectList = JsonSerializer.Deserialize<List<TTProjectSummary>>(jsonString);
         }
 
         private static void Callback(object state)

@@ -31,9 +31,9 @@ namespace TimeTrackerLib.Repositories
 
         }
 
-        public List<TTProject> GetProjects()
+        public List<TTProjectSummary> GetProjects()
         {
-            return _dbConnection.Query<TTProject>("SELECT * FROM TTProject").ToList();
+            return _dbConnection.Query<TTProjectSummary>("SELECT * FROM vwTTProjectSummary").ToList();
         }
 
         public int CreateNewProject(TTProject ttProject)

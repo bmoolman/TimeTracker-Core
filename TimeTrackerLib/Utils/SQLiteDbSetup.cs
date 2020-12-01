@@ -43,6 +43,10 @@ namespace TimeTrackerLib.Utils
                 createSQL = "CREATE VIEW vwProjectInfo AS SELECT TTProject.ProjectId, ProjectName, StartUTC, EndUTC, Comments, IsCustom, LoggedMinutes FROM TTEvent INNER JOIN TTProject ON TTProject.ProjectId = TTEvent.ProjectId";
                 command.CommandText = createSQL;
                 command.ExecuteNonQuery();
+                
+                createSQL = "CREATE VIEW vwTTProjectSummary as SELECT TTProject.ProjectID, TTProject.ProjectName, ProjectDescription, IFNULL(SUM(LoggedMinutes),0) as SumLoggedMinutes FROM TTProject LEFT JOIN TTEvent ON TTProject.ProjectId = TTEvent.ProjectId GROUP BY TTProject.ProjectID,TTProject.ProjectName,TTProject.ProjectDescription";
+                command.CommandText = createSQL;
+                command.ExecuteNonQuery();
 
             }
         }
